@@ -549,6 +549,149 @@
         .mobile-overlay.active {
             display: block;
         }
+
+        /* Employee Cards Section */
+        .employee-verification {
+            padding: 5rem 5%;
+            background: var(--card-bg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .verification-header {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 4rem;
+        }
+
+        .verification-title {
+            font-size: 2.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .verification-description {
+            font-size: 1.2rem;
+            color: #4a5568;
+            margin-bottom: 2rem;
+        }
+
+        .highlight-text {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .demo-card {
+            position: relative;
+            max-width: 400px;
+            margin: 2rem auto;
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            padding: 2rem;
+            border-radius: 16px;
+            color: white;
+            text-align: left;
+            box-shadow: 0 20px 40px rgba(99, 91, 255, 0.2);
+            transform: perspective(1000px) rotateY(-5deg);
+            transition: transform 0.3s ease;
+        }
+
+        .demo-card:hover {
+            transform: perspective(1000px) rotateY(0deg);
+        }
+
+        .demo-card::before {
+            content: "VERIFIED";
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .employee-photo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, 0.5);
+            margin-bottom: 1rem;
+            object-fit: cover;
+        }
+
+        .employee-name {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .employee-role {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+        }
+
+        .verification-details {
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding-top: 1rem;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .detail-label {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .detail-value {
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .verification-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .verification-feature {
+            background: var(--light-bg);
+            padding: 2rem;
+            border-radius: 16px;
+            text-align: left;
+            transition: all 0.3s;
+        }
+
+        .verification-feature:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .feature-title {
+            font-size: 1.2rem;
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-description {
+            color: #4a5568;
+            line-height: 1.5;
+        }
     </style>
 </head>
 <body>
@@ -617,6 +760,68 @@
                 </div>
                 <h3>Secure & Compliant</h3>
                 <p>GDPR compliant with enterprise-grade security</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Employee Verification Section -->
+    <section class="employee-verification" data-aos="fade-up">
+        <div class="verification-header">
+            <h2 class="verification-title">Say No to Fake Experience,<br>Say Yes to Quality Members</h2>
+            <p class="verification-description">
+                Track your employees' experience and behavior with our advanced verification system. 
+                Get <span class="highlight-text">verified employment cards</span> for every team member 
+                and ensure authenticity in your hiring process.
+            </p>
+        </div>
+
+        <!-- Demo Employee Card -->
+        <div class="demo-card" data-aos="fade-up" data-aos-delay="200">
+            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Employee Photo" class="employee-photo">
+            <h3 class="employee-name">Alex Johnson</h3>
+            <p class="employee-role">Senior Software Engineer</p>
+            <div class="verification-details">
+                <div class="detail-item">
+                    <span class="detail-label">Experience</span>
+                    <span class="detail-value">8+ Years</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Verified At</span>
+                    <span class="detail-value">Tech Corp</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Skills</span>
+                    <span class="detail-value">Full Stack</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Status</span>
+                    <span class="detail-value">Active</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Verification Features -->
+        <div class="verification-features">
+            <div class="verification-feature" data-aos="fade-up" data-aos-delay="300">
+                <i class="fas fa-shield-alt feature-icon"></i>
+                <h3 class="feature-title">Verified Experience</h3>
+                <p class="feature-description">
+                    Every employment detail is thoroughly verified through our multi-step verification process.
+                </p>
+            </div>
+            <div class="verification-feature" data-aos="fade-up" data-aos-delay="400">
+                <i class="fas fa-chart-line feature-icon"></i>
+                <h3 class="feature-title">Performance Tracking</h3>
+                <p class="feature-description">
+                    Monitor employee growth and performance with detailed analytics and insights.
+                </p>
+            </div>
+            <div class="verification-feature" data-aos="fade-up" data-aos-delay="500">
+                <i class="fas fa-users feature-icon"></i>
+                <h3 class="feature-title">Team Management</h3>
+                <p class="feature-description">
+                    Efficiently manage your team with digital employee cards and verification status.
+                </p>
             </div>
         </div>
     </section>
