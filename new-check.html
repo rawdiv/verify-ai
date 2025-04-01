@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Background Check - VerifyAI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #635bff;
+            --secondary-color: #0a2540;
+            --accent-color: #00d4ff;
+            --text-color: #1a1f36;
+            --light-bg: #fafafa;
+            --card-bg: #ffffff;
+            --sidebar-width: 280px;
+            --header-height: 60px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Reuse sidebar and mobile nav styles from dashboard.html */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--card-bg);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding: 1rem;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 2rem;
+            transition: margin-left 0.3s ease;
+        }
+
+        /* Form Styles */
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-header {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .form-title {
+            font-size: 1.8rem;
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-subtitle {
+            color: #4a5568;
+            font-size: 1rem;
+        }
+
+        .form-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--light-bg);
+            border: 2px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .step.active .step-number {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        .step.completed .step-number {
+            background: #48bb78;
+            border-color: #48bb78;
+            color: white;
+        }
+
+        .step-title {
+            font-size: 0.9rem;
+            color: #4a5568;
+        }
+
+        .step.active .step-title {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .form-steps::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #e2e8f0;
+            z-index: 0;
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--secondary-color);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 91, 255, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary {
+            background: var(--light-bg);
+            border: 1px solid #e2e8f0;
+            color: var(--text-color);
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            border: none;
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Report Styles */
+        .report-container {
+            display: none;
+            margin-top: 2rem;
+        }
+
+        .report-container.active {
+            display: block;
+        }
+
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .report-status {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        .status-good {
+            background: #e6f4ea;
+            color: #1e7e34;
+        }
+
+        .status-rejected {
+            background: #fce4ec;
+            color: #c2185b;
+        }
+
+        .report-section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: var(--light-bg);
+            border-radius: 12px;
+        }
+
+        .report-section-title {
+            font-size: 1.1rem;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+        }
+
+        .report-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .report-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .report-label {
+            font-size: 0.9rem;
+            color: #4a5568;
+        }
+
+        .report-value {
+            font-weight: 500;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .form-steps {
+                overflow-x: auto;
+                padding-bottom: 1rem;
+            }
+
+            .step {
+                min-width: 120px;
+            }
+        }
+
+        /* Progress Bar Styles */
+        .progress-container {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .progress-title {
+            font-size: 1.1rem;
+            color: var(--secondary-color);
+        }
+
+        .progress-status {
+            font-size: 0.9rem;
+            color: #4a5568;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary-color);
+            width: 0;
+            transition: width 0.3s ease;
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .step-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            transition: all 0.3s;
+        }
+
+        .progress-step.active .step-dot {
+            background: var(--primary-color);
+            transform: scale(1.2);
+        }
+
+        .progress-step.completed .step-dot {
+            background: #48bb78;
+        }
+
+        .step-label {
+            font-size: 0.8rem;
+            color: #4a5568;
+        }
+
+        /* Enhanced Report Styles */
+        .report-section {
+            position: relative;
+        }
+
+        .report-section::after {
+            content: '';
+            position: absolute;
+            bottom: -1rem;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #e2e8f0;
+        }
+
+        .report-section:last-child::after {
+            display: none;
+        }
+
+        .report-item {
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .report-item::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--primary-color);
+        }
+
+        .verification-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-verified {
+            background: #e6f4ea;
+            color: #1e7e34;
+        }
+
+        .status-pending {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .status-failed {
+            background: #fce4ec;
+            color: #c2185b;
+        }
+
+        .report-timestamp {
+            font-size: 0.8rem;
+            color: #718096;
+            margin-top: 0.5rem;
+        }
+
+        /* Data Visualization Styles */
+        .chart-container {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .chart-title {
+            font-size: 1.1rem;
+            color: var(--secondary-color);
+        }
+
+        .chart-legend {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.8rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+        }
+
+        .chart-bar {
+            height: 24px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .chart-fill {
+            height: 100%;
+            background: var(--primary-color);
+            width: 0;
+            transition: width 0.5s ease;
+        }
+
+        .chart-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.25rem;
+            font-size: 0.9rem;
+        }
+
+        /* Export Button Styles */
+        .export-options {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .export-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .export-btn i {
+            font-size: 1rem;
+        }
+
+        .export-btn.pdf {
+            background: #dc3545;
+            color: white;
+        }
+
+        .export-btn.excel {
+            background: #28a745;
+            color: white;
+        }
+
+        .export-btn.word {
+            background: #007bff;
+            color: white;
+        }
+
+        /* Real-time Update Styles */
+        .update-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            color: #4a5568;
+            margin-top: 0.5rem;
+        }
+
+        .update-indicator i {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Additional Verification Sections */
+        .verification-section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: var(--light-bg);
+            border-radius: 12px;
+        }
+
+        .verification-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .verification-title {
+            font-size: 1.1rem;
+            color: var(--secondary-color);
+        }
+
+        .verification-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar (same as dashboard) -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <i class="fas fa-shield-alt"></i>
+            <h1>VerifyAI</h1>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="dashboard.html" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link active">
+                    <i class="fas fa-user-plus"></i>
+                    New Background Check
+                </a>
+            </li>
+            <!-- Other nav items same as dashboard -->
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="form-container">
+            <div class="form-header">
+                <h1 class="form-title">New Background Check</h1>
+                <p class="form-subtitle">Complete the form below to start a new background verification</p>
+            </div>
+
+            <!-- Form Steps -->
+            <div class="form-steps">
+                <div class="step active">
+                    <div class="step-number">1</div>
+                    <div class="step-title">Personal Details</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-title">Employment History</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-title">Documents</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-title">Review & Submit</div>
+                </div>
+            </div>
+
+            <!-- Step 1: Personal Details -->
+            <div class="form-section active" id="step1">
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" class="form-input" placeholder="Enter full name">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Date of Birth</label>
+                        <input type="date" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Gender</label>
+                        <select class="form-input">
+                            <option value="">Select gender</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" class="form-input" placeholder="Enter email address">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Phone Number</label>
+                    <input type="tel" class="form-input" placeholder="Enter phone number">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Current Address</label>
+                    <textarea class="form-input" rows="3" placeholder="Enter current address"></textarea>
+                </div>
+            </div>
+
+            <!-- Step 2: Employment History -->
+            <div class="form-section" id="step2">
+                <div class="form-group">
+                    <label class="form-label">Current Employer</label>
+                    <input type="text" class="form-input" placeholder="Enter current employer name">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Start Date</label>
+                        <input type="date" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">End Date</label>
+                        <input type="date" class="form-input">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Position</label>
+                    <input type="text" class="form-input" placeholder="Enter position">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Previous Employer</label>
+                    <input type="text" class="form-input" placeholder="Enter previous employer name">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Start Date</label>
+                        <input type="date" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">End Date</label>
+                        <input type="date" class="form-input">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Documents -->
+            <div class="form-section" id="step3">
+                <div class="form-group">
+                    <label class="form-label">Aadhaar Card Number</label>
+                    <input type="text" class="form-input" placeholder="Enter 12-digit Aadhaar number" maxlength="12" pattern="[0-9]{12}">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Aadhaar Card Document</label>
+                    <input type="file" class="form-input" accept="image/*,.pdf">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">PAN Card Number</label>
+                    <input type="text" class="form-input" placeholder="Enter 10-digit PAN number" maxlength="10" pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">PAN Card Document</label>
+                    <input type="file" class="form-input" accept="image/*,.pdf">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Passport Number</label>
+                    <input type="text" class="form-input" placeholder="Enter passport number">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Passport Document</label>
+                    <input type="file" class="form-input" accept="image/*,.pdf">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Resume</label>
+                    <input type="file" class="form-input" accept=".pdf,.doc,.docx">
+                </div>
+            </div>
+
+            <!-- Step 4: Review & Submit -->
+            <div class="form-section" id="step4">
+                <div class="form-group">
+                    <h3 class="form-label">Review Information</h3>
+                    
+                    <!-- Enhanced Progress Bar -->
+                    <div class="progress-container">
+                        <div class="progress-header">
+                            <h3 class="progress-title">Verification Progress</h3>
+                            <span class="progress-status">In Progress</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 75%"></div>
+                        </div>
+                        <div class="progress-steps">
+                            <div class="progress-step completed">
+                                <div class="step-dot"></div>
+                                <span class="step-label">Identity</span>
+                            </div>
+                            <div class="progress-step completed">
+                                <div class="step-dot"></div>
+                                <span class="step-label">Documents</span>
+                            </div>
+                            <div class="progress-step active">
+                                <div class="step-dot"></div>
+                                <span class="step-label">Employment</span>
+                            </div>
+                            <div class="progress-step">
+                                <div class="step-dot"></div>
+                                <span class="step-label">Education</span>
+                            </div>
+                            <div class="progress-step">
+                                <div class="step-dot"></div>
+                                <span class="step-label">Criminal</span>
+                            </div>
+                            <div class="progress-step">
+                                <div class="step-dot"></div>
+                                <span class="step-label">Final</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Data Visualization -->
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Verification Progress Overview</h3>
+                            <div class="chart-legend">
+                                <div class="legend-item">
+                                    <div class="legend-color" style="background: #48bb78"></div>
+                                    <span>Verified</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color" style="background: #f57c00"></div>
+                                    <span>Pending</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color" style="background: #c2185b"></div>
+                                    <span>Failed</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chart-item">
+                            <div class="chart-label">
+                                <span>Identity Verification</span>
+                                <span>100%</span>
+                            </div>
+                            <div class="chart-bar">
+                                <div class="chart-fill" style="width: 100%"></div>
+                            </div>
+                        </div>
+                        <div class="chart-item">
+                            <div class="chart-label">
+                                <span>Document Check</span>
+                                <span>100%</span>
+                            </div>
+                            <div class="chart-bar">
+                                <div class="chart-fill" style="width: 100%"></div>
+                            </div>
+                        </div>
+                        <div class="chart-item">
+                            <div class="chart-label">
+                                <span>Employment History</span>
+                                <span>75%</span>
+                            </div>
+                            <div class="chart-bar">
+                                <div class="chart-fill" style="width: 75%"></div>
+                            </div>
+                        </div>
+                        <div class="chart-item">
+                            <div class="chart-label">
+                                <span>Education Check</span>
+                                <span>100%</span>
+                            </div>
+                            <div class="chart-bar">
+                                <div class="chart-fill" style="width: 100%"></div>
+                            </div>
+                        </div>
+                        <div class="chart-item">
+                            <div class="chart-label">
+                                <span>Criminal Record</span>
+                                <span>100%</span>
+                            </div>
+                            <div class="chart-bar">
+                                <div class="chart-fill" style="width: 100%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Export Options -->
+                    <div class="export-options">
+                        <button class="export-btn pdf" onclick="exportReport('pdf')">
+                            <i class="fas fa-file-pdf"></i>
+                            Export PDF
+                        </button>
+                        <button class="export-btn excel" onclick="exportReport('excel')">
+                            <i class="fas fa-file-excel"></i>
+                            Export Excel
+                        </button>
+                        <button class="export-btn word" onclick="exportReport('word')">
+                            <i class="fas fa-file-word"></i>
+                            Export Word
+                        </button>
+                    </div>
+
+                    <!-- Real-time Update Indicator -->
+                    <div class="update-indicator">
+                        <i class="fas fa-sync"></i>
+                        <span>Last updated: <span id="lastUpdate">Just now</span></span>
+                    </div>
+
+                    <div class="report-container active">
+                        <div class="report-header">
+                            <h2>Background Check Report</h2>
+                            <span class="report-status status-good">Status: Good</span>
+                        </div>
+                        
+                        <!-- Personal Information Section -->
+                        <div class="report-section">
+                            <h3 class="report-section-title">Personal Information</h3>
+                            <div class="report-grid">
+                                <div class="report-item">
+                                    <span class="report-label">Full Name</span>
+                                    <span class="report-value">John Doe</span>
+                                    <span class="verification-status status-verified">Verified</span>
+                                    <div class="report-timestamp">Verified on: 2024-03-15 14:30</div>
+                                </div>
+                                <div class="report-item">
+                                    <span class="report-label">Date of Birth</span>
+                                    <span class="report-value">1990-01-01</span>
+                                    <span class="verification-status status-verified">Verified</span>
+                                    <div class="report-timestamp">Verified on: 2024-03-15 14:30</div>
+                                </div>
+                                <div class="report-item">
+                                    <span class="report-label">Email</span>
+                                    <span class="report-value">john.doe@example.com</span>
+                                    <span class="verification-status status-verified">Verified</span>
+                                    <div class="report-timestamp">Verified on: 2024-03-15 14:30</div>
+                                </div>
+                                <div class="report-item">
+                                    <span class="report-label">Phone</span>
+                                    <span class="report-value">+91 98765 43210</span>
+                                    <span class="verification-status status-verified">Verified</span>
+                                    <div class="report-timestamp">Verified on: 2024-03-15 14:30</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Document Verification Section -->
+                        <div class="report-section">
+                            <h3 class="report-section-title">Document Verification</h3>
+                            <div class="report-grid">
+                                <div class="report-item">
+                                    <span class="report-label">Aadhaar Card</span>
+                                    <span class="report-value">XXXX-XXXX-1234</span>
+                                    <span class="verification-status status-verified">Verified</span>
+                                    <div class="report-timestamp">Verified on: 2024-03-15 14:31</div>
+                                </div>
+                                <div class="report-item">
+                                    <span class="report-label">PAN Card</span>
+                                    <span class="report-value">ABCDE1234F</span>
+                                    <span class="verification-status status-verified">Verified</span>
+                                    <div class="report-timestamp">Verified on: 2024-03-15 14:31</div>
+                                </div>
+                                <div class="report-item">
+                                    <span class="report-label">Passport</span>
+                                    <span class="report-value">N1234567</span>
+                                    <span class="verification-status status-verified">Verified</span>
+                                    <div class="report-timestamp">Verified on: 2024-03-15 14:31</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Employment History Section -->
+                        <div class="report-section">
+                            <h3 class="report-section-title">Employment History</h3>
+                            <div class="report-grid">
+                                <div class="report-item">
+                                    <span class="report-label">Current Employer</span>
+                                    <span class="report-value">Tech Corp</span>
+                                    <span class="verification-status status-pending">Pending</span>
+                                    <div class="report-timestamp">Last checked: 2024-03-15 14:32</div>
+                                </div>
+                                <div class="report-item">
+                                    <span class="report-label">Position</span>
+                                    <span class="report-value">Senior Developer</span>
+                                    <span class="verification-status status-pending">Pending</span>
+                                    <div class="report-timestamp">Last checked: 2024-03-15 14:32</div>
+                                </div>
+                                <div class="report-item">
+                                    <span class="report-label">Duration</span>
+                                    <span class="report-value">2020 - Present</span>
+                                    <span class="verification-status status-pending">Pending</span>
+                                    <div class="report-timestamp">Last checked: 2024-03-15 14:32</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Criminal Record Section -->
+                        <div class="report-section">
+                            <h3 class="report-section-title">Criminal Record Check</h3>
+                            <div class="report-grid">
+                                <div class="report-item">
+                                    <span class="report-label">National Database</span>
+                                    <span class="report-value">Clear</span>
+                                    <span class="verification-status status-verified">Verified</span>
+                                    <div class="report-timestamp">Verified on: 2024-03-15 14:33</div>
+                                </div>
+                                <div class="report-item">
+                                    <span class="report-label">Court Records</span>
+                                    <span class="report-value">Clear</span>
+                                    <span class="verification-status status-verified">Verified</span>
+                                    <div class="report-timestamp">Verified on: 2024-03-15 14:33</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Education Verification Section -->
+                        <div class="report-section">
+                            <h3 class="report-section-title">Education Verification</h3>
+                            <div class="report-grid">
+                                <div class="report-item">
+                                    <span class="report-label">Highest Degree</span>
+                                    <span class="report-value">B.Tech in Computer Science</span>
+                                    <span class="verification-status status-verified">Verified</span>
+                                    <div class="report-timestamp">Verified on: 2024-03-15 14:34</div>
+                                </div>
+                                <div class="report-item">
+                                    <span class="report-label">University</span>
+                                    <span class="report-value">IIT Delhi</span>
+                                    <span class="verification-status status-verified">Verified</span>
+                                    <div class="report-timestamp">Verified on: 2024-03-15 14:34</div>
+                                </div>
+                                <div class="report-item">
+                                    <span class="report-label">Graduation Year</span>
+                                    <span class="report-value">2012</span>
+                                    <span class="verification-status status-verified">Verified</span>
+                                    <div class="report-timestamp">Verified on: 2024-03-15 14:34</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Reference Check Section -->
+                        <div class="report-section">
+                            <h3 class="report-section-title">Reference Check</h3>
+                            <div class="report-grid">
+                                <div class="report-item">
+                                    <span class="report-label">Professional Reference</span>
+                                    <span class="report-value">Positive</span>
+                                    <span class="verification-status status-verified">Verified</span>
+                                    <div class="report-timestamp">Verified on: 2024-03-15 14:35</div>
+                                </div>
+                                <div class="report-item">
+                                    <span class="report-label">Character Reference</span>
+                                    <span class="report-value">Positive</span>
+                                    <span class="verification-status status-verified">Verified</span>
+                                    <div class="report-timestamp">Verified on: 2024-03-15 14:35</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Additional Verification Sections -->
+                        <div class="verification-section">
+                            <div class="verification-header">
+                                <h3 class="verification-title">Social Media Presence</h3>
+                                <span class="verification-status status-verified">Verified</span>
+                            </div>
+                            <div class="report-grid">
+                                <div class="report-item">
+                                    <span class="report-label">LinkedIn Profile</span>
+                                    <span class="report-value">Active</span>
+                                    <span class="verification-status status-verified">Verified</span>
+                                    <div class="report-timestamp">Verified on: 2024-03-15 14:36</div>
+                                </div>
+                                <div class="report-item">
+                                    <span class="report-label">Professional Activity</span>
+                                    <span class="report-value">Consistent</span>
+                                    <span class="verification-status status-verified">Verified</span>
+                                    <div class="report-timestamp">Verified on: 2024-03-15 14:36</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="verification-section">
+                            <div class="verification-header">
+                                <h3 class="verification-title">Financial Background</h3>
+                                <span class="verification-status status-verified">Verified</span>
+                            </div>
+                            <div class="report-grid">
+                                <div class="report-item">
+                                    <span class="report-label">Credit Score</span>
+                                    <span class="report-value">750+</span>
+                                    <span class="verification-status status-verified">Verified</span>
+                                    <div class="report-timestamp">Verified on: 2024-03-15 14:37</div>
+                                </div>
+                                <div class="report-item">
+                                    <span class="report-label">Bankruptcy History</span>
+                                    <span class="report-value">None</span>
+                                    <span class="verification-status status-verified">Verified</span>
+                                    <div class="report-timestamp">Verified on: 2024-03-15 14:37</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="verification-section">
+                            <div class="verification-header">
+                                <h3 class="verification-title">Professional Certifications</h3>
+                                <span class="verification-status status-verified">Verified</span>
+                            </div>
+                            <div class="report-grid">
+                                <div class="report-item">
+                                    <span class="report-label">AWS Certified</span>
+                                    <span class="report-value">Solutions Architect</span>
+                                    <span class="verification-status status-verified">Verified</span>
+                                    <div class="report-timestamp">Verified on: 2024-03-15 14:38</div>
+                                </div>
+                                <div class="report-item">
+                                    <span class="report-label">PMP Certification</span>
+                                    <span class="report-value">Active</span>
+                                    <span class="verification-status status-verified">Verified</span>
+                                    <div class="report-timestamp">Verified on: 2024-03-15 14:38</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <button class="btn btn-secondary" id="prevBtn" style="display: none;">Previous</button>
+                <button class="btn btn-primary" id="nextBtn">Next</button>
+                <button class="btn btn-primary" id="submitBtn" style="display: none;">Submit</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Form Navigation
+        const steps = document.querySelectorAll('.step');
+        const sections = document.querySelectorAll('.form-section');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const submitBtn = document.getElementById('submitBtn');
+        let currentStep = 0;
+
+        function updateSteps() {
+            steps.forEach((step, index) => {
+                if (index < currentStep) {
+                    step.classList.add('completed');
+                } else if (index === currentStep) {
+                    step.classList.add('active');
+                } else {
+                    step.classList.remove('active', 'completed');
+                }
+            });
+
+            sections.forEach((section, index) => {
+                if (index === currentStep) {
+                    section.classList.add('active');
+                } else {
+                    section.classList.remove('active');
+                }
+            });
+
+            // Update buttons
+            prevBtn.style.display = currentStep === 0 ? 'none' : 'block';
+            nextBtn.style.display = currentStep === steps.length - 1 ? 'none' : 'block';
+            submitBtn.style.display = currentStep === steps.length - 1 ? 'block' : 'none';
+        }
+
+        // Progress Bar Animation
+        function updateProgress(step) {
+            const progressFill = document.querySelector('.progress-fill');
+            const progressSteps = document.querySelectorAll('.progress-step');
+            const progressStatus = document.querySelector('.progress-status');
+            const chartFills = document.querySelectorAll('.chart-fill');
+            
+            // Update progress bar
+            const progress = (step / (steps.length - 1)) * 100;
+            progressFill.style.width = `${progress}%`;
+            
+            // Update steps
+            progressSteps.forEach((stepElement, index) => {
+                if (index < step) {
+                    stepElement.classList.add('completed');
+                } else if (index === step) {
+                    stepElement.classList.add('active');
+                } else {
+                    stepElement.classList.remove('active', 'completed');
+                }
+            });
+
+            // Update status text
+            if (step === steps.length - 1) {
+                progressStatus.textContent = 'Completed';
+                progressStatus.style.color = '#48bb78';
+            } else {
+                progressStatus.textContent = 'In Progress';
+                progressStatus.style.color = '#4a5568';
+            }
+
+            // Update chart fills
+            chartFills.forEach((fill, index) => {
+                const progress = (step / (steps.length - 1)) * 100;
+                fill.style.width = `${Math.min(progress, 100)}%`;
+            });
+        }
+
+        // Update progress when changing steps
+        nextBtn.addEventListener('click', () => {
+            if (currentStep < steps.length - 1) {
+                currentStep++;
+                updateSteps();
+                updateProgress(currentStep);
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentStep > 0) {
+                currentStep--;
+                updateSteps();
+                updateProgress(currentStep);
+            }
+        });
+
+        submitBtn.addEventListener('click', () => {
+            // Here you would typically send the form data to your backend
+            alert('Background check submitted successfully!');
+            window.location.href = 'dashboard.html';
+        });
+
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const sidebar = document.querySelector('.sidebar');
+        const icon = mobileMenuBtn.querySelector('i');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-times');
+        });
+
+        // Close sidebar when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!sidebar.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                sidebar.classList.remove('active');
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+
+        // Real-time Updates
+        function updateLastUpdate() {
+            const now = new Date();
+            const lastUpdate = document.getElementById('lastUpdate');
+            lastUpdate.textContent = now.toLocaleTimeString();
+        }
+
+        // Update every 30 seconds
+        setInterval(updateLastUpdate, 30000);
+        updateLastUpdate();
+
+        // Export Functionality
+        function exportReport(format) {
+            const reportData = {
+                personalInfo: {
+                    name: 'John Doe',
+                    dob: '1990-01-01',
+                    email: 'john.doe@example.com',
+                    phone: '+91 98765 43210'
+                },
+                documents: {
+                    aadhaar: 'XXXX-XXXX-1234',
+                    pan: 'ABCDE1234F',
+                    passport: 'N1234567'
+                },
+                employment: {
+                    current: 'Tech Corp',
+                    position: 'Senior Developer',
+                    duration: '2020 - Present'
+                },
+                education: {
+                    degree: 'B.Tech in Computer Science',
+                    university: 'IIT Delhi',
+                    year: '2012'
+                },
+                verification: {
+                    criminal: 'Clear',
+                    references: 'Positive',
+                    social: 'Active',
+                    financial: '750+'
+                }
+            };
+
+            // Here you would typically send this data to your backend
+            // to generate the appropriate file format
+            console.log(`Exporting report in ${format} format:`, reportData);
+            alert(`Report exported successfully in ${format.toUpperCase()} format!`);
+        }
+
+        // Document Validation
+        document.querySelectorAll('input[type="text"]').forEach(input => {
+            input.addEventListener('input', function() {
+                if (this.placeholder.includes('Aadhaar')) {
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                } else if (this.placeholder.includes('PAN')) {
+                    this.value = this.value.toUpperCase();
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

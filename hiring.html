@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VerifyAI - Hiring</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #635bff;
+            --secondary-color: #0a2540;
+            --accent-color: #00d4ff;
+            --text-color: #1a1f36;
+            --light-bg: #fafafa;
+            --card-bg: #ffffff;
+            --sidebar-width: 280px;
+            --header-height: 60px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--card-bg);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding: 1rem;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+        }
+
+        .sidebar-header h1 {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem 1rem;
+            color: var(--text-color);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .nav-link i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 2.5rem;
+            transition: margin-left 0.3s ease;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .header-title {
+            font-size: 1.8rem;
+            color: var(--secondary-color);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Hiring Dashboard Styles */
+        .hiring-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .dashboard-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .dashboard-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .dashboard-card-title {
+            font-size: 1.1rem;
+            color: var(--secondary-color);
+        }
+
+        .dashboard-card-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .dashboard-card-label {
+            color: #4a5568;
+            font-size: 0.9rem;
+        }
+
+        /* Job Posting Form Styles */
+        .job-form {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--secondary-color);
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #4f46e5;
+        }
+
+        /* Job Listings Styles */
+        .job-listings {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .job-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+
+        .job-title {
+            font-size: 1.2rem;
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .job-company {
+            font-size: 0.9rem;
+            color: #4a5568;
+        }
+
+        .job-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .job-stat {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #4a5568;
+        }
+
+        /* Interview Scheduling Styles */
+        .interview-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .interview-modal.active {
+            display: flex;
+        }
+
+        .interview-form {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #4a5568;
+        }
+
+        /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .hiring-dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .job-listings {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Status Badges */
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: #e6f4ea;
+            color: #1e7e34;
+        }
+
+        .status-closed {
+            background: #fce4ec;
+            color: #c2185b;
+        }
+
+        .status-draft {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        /* Filter and Sort Styles */
+        .filters-section {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-label {
+            font-size: 0.9rem;
+            color: var(--secondary-color);
+            font-weight: 500;
+        }
+
+        .filter-select {
+            padding: 0.5rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        /* Calendar View Styles */
+        .calendar-section {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            padding: 0.5rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .calendar-day:hover {
+            background: var(--light-bg);
+        }
+
+        .calendar-day.today {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .calendar-day.has-interview {
+            border-color: var(--primary-color);
+        }
+
+        .interview-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            margin: 0.25rem auto;
+        }
+
+        /* Analytics Styles */
+        .analytics-section {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .analytics-card {
+            background: var(--light-bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+        }
+
+        .analytics-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .analytics-title {
+            font-size: 1.1rem;
+            color: var(--secondary-color);
+        }
+
+        .analytics-chart {
+            height: 200px;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <i class="fas fa-shield-alt"></i>
+            <h1>VerifyAI</h1>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="dashboard.html" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="hiring.html" class="nav-link active">
+                    <i class="fas fa-briefcase"></i>
+                    Hiring
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-user-plus"></i>
+                    New Background Check
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-list"></i>
+                    My Verifications
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-chart-bar"></i>
+                    Analytics & Reports
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-code"></i>
+                    API Access
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-users"></i>
+                    User Roles
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-file-upload"></i>
+                    Bulk Uploads
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-shield-alt"></i>
+                    Compliance
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-question-circle"></i>
+                    Support
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="header">
+            <h1 class="header-title">Hiring Dashboard</h1>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="user-profile">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <span>John Doe</span>
+            </div>
+        </div>
+
+        <!-- Hiring Dashboard Stats -->
+        <div class="hiring-dashboard">
+            <div class="dashboard-card">
+                <div class="dashboard-card-header">
+                    <h3 class="dashboard-card-title">Active Jobs</h3>
+                    <i class="fas fa-briefcase"></i>
+                </div>
+                <div class="dashboard-card-value">12</div>
+                <div class="dashboard-card-label">Open positions</div>
+            </div>
+            <div class="dashboard-card">
+                <div class="dashboard-card-header">
+                    <h3 class="dashboard-card-title">Total Applications</h3>
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <div class="dashboard-card-value">245</div>
+                <div class="dashboard-card-label">Last 30 days</div>
+            </div>
+            <div class="dashboard-card">
+                <div class="dashboard-card-header">
+                    <h3 class="dashboard-card-title">Interviews Scheduled</h3>
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <div class="dashboard-card-value">18</div>
+                <div class="dashboard-card-label">This week</div>
+            </div>
+            <div class="dashboard-card">
+                <div class="dashboard-card-header">
+                    <h3 class="dashboard-card-title">Hired</h3>
+                    <i class="fas fa-user-check"></i>
+                </div>
+                <div class="dashboard-card-value">5</div>
+                <div class="dashboard-card-label">This month</div>
+            </div>
+        </div>
+
+        <!-- Job Posting Form -->
+        <div class="job-form">
+            <h2>Post New Job</h2>
+            <form id="jobPostingForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Job Title</label>
+                        <input type="text" class="form-control" placeholder="e.g., Senior Developer">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Department</label>
+                        <input type="text" class="form-control" placeholder="e.g., Engineering">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Location</label>
+                        <input type="text" class="form-control" placeholder="e.g., Remote">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Employment Type</label>
+                        <select class="form-control">
+                            <option>Full-time</option>
+                            <option>Part-time</option>
+                            <option>Contract</option>
+                            <option>Internship</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Job Description</label>
+                    <textarea class="form-control" rows="4" placeholder="Enter job description..."></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Required Experience</label>
+                        <input type="text" class="form-control" placeholder="e.g., 5+ years">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Salary Range</label>
+                        <input type="text" class="form-control" placeholder="e.g., $80,000 - $120,000">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Required Skills</label>
+                    <input type="text" class="form-control" placeholder="e.g., JavaScript, React, Node.js">
+                </div>
+                <button type="submit" class="btn btn-primary">Post Job</button>
+            </form>
+        </div>
+
+        <!-- Job Listings -->
+        <div class="job-listings">
+            <!-- Senior Developer Position -->
+            <div class="job-card">
+                <div class="job-header">
+                    <div>
+                        <h3 class="job-title">Senior Developer</h3>
+                        <p class="job-company">Tech Corp</p>
+                    </div>
+                    <span class="status-badge status-active">Active</span>
+                </div>
+                <div class="job-details">
+                    <div class="job-stat">
+                        <span class="stat-value">45</span>
+                        <span class="stat-label">Applications</span>
+                    </div>
+                    <div class="job-stat">
+                        <span class="stat-value">12</span>
+                        <span class="stat-label">Shortlisted</span>
+                    </div>
+                    <div class="job-stat">
+                        <span class="stat-value">5</span>
+                        <span class="stat-label">Interviews</span>
+                    </div>
+                    <div class="job-stat">
+                        <span class="stat-value">2</span>
+                        <span class="stat-label">Offers</span>
+                    </div>
+                </div>
+                <div class="applicant-list">
+                    <div class="applicant-item">
+                        <div class="applicant-info">
+                            <div class="applicant-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="applicant-details">
+                                <h4>John Smith</h4>
+                                <p>8 years experience</p>
+                            </div>
+                        </div>
+                        <div class="applicant-actions">
+                            <button class="action-btn view" title="View Resume">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="action-btn interview" title="Schedule Interview" onclick="openInterviewModal()">
+                                <i class="fas fa-calendar"></i>
+                            </button>
+                            <button class="action-btn whatsapp" title="Contact on WhatsApp">
+                                <i class="fab fa-whatsapp"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Manager Position -->
+            <div class="job-card">
+                <div class="job-header">
+                    <div>
+                        <h3 class="job-title">Product Manager</h3>
+                        <p class="job-company">Innovate Solutions</p>
+                    </div>
+                    <span class="status-badge status-active">Active</span>
+                </div>
+                <div class="job-details">
+                    <div class="job-stat">
+                        <span class="stat-value">32</span>
+                        <span class="stat-label">Applications</span>
+                    </div>
+                    <div class="job-stat">
+                        <span class="stat-value">8</span>
+                        <span class="stat-label">Shortlisted</span>
+                    </div>
+                    <div class="job-stat">
+                        <span class="stat-value">3</span>
+                        <span class="stat-label">Interviews</span>
+                    </div>
+                    <div class="job-stat">
+                        <span class="stat-value">1</span>
+                        <span class="stat-label">Offers</span>
+                    </div>
+                </div>
+                <div class="applicant-list">
+                    <div class="applicant-item">
+                        <div class="applicant-info">
+                            <div class="applicant-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="applicant-details">
+                                <h4>Mike Wilson</h4>
+                                <p>7 years experience</p>
+                            </div>
+                        </div>
+                        <div class="applicant-actions">
+                            <button class="action-btn view" title="View Resume">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="action-btn interview" title="Schedule Interview" onclick="openInterviewModal()">
+                                <i class="fas fa-calendar"></i>
+                            </button>
+                            <button class="action-btn whatsapp" title="Contact on WhatsApp">
+                                <i class="fab fa-whatsapp"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interview Scheduling Modal -->
+        <div class="interview-modal" id="interviewModal">
+            <div class="interview-form">
+                <div class="modal-header">
+                    <h3 class="modal-title">Schedule Interview</h3>
+                    <button class="close-modal" onclick="closeInterviewModal()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <form id="interviewForm">
+                    <div class="form-group">
+                        <label class="form-label">Candidate Name</label>
+                        <input type="text" class="form-control" value="John Smith" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Position</label>
+                        <input type="text" class="form-control" value="Senior Developer" readonly>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Date</label>
+                            <input type="date" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Time</label>
+                            <input type="time" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Interview Type</label>
+                        <select class="form-control">
+                            <option>Technical Interview</option>
+                            <option>HR Interview</option>
+                            <option>Final Interview</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Interview Link</label>
+                        <input type="text" class="form-control" placeholder="Enter video call link">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Notes</label>
+                        <textarea class="form-control" rows="3" placeholder="Add any additional notes..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Schedule Interview</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Filters Section -->
+        <div class="filters-section">
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label class="filter-label">Job Status</label>
+                    <select class="filter-select">
+                        <option>All Statuses</option>
+                        <option>Active</option>
+                        <option>Closed</option>
+                        <option>Draft</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Department</label>
+                    <select class="filter-select">
+                        <option>All Departments</option>
+                        <option>Engineering</option>
+                        <option>Design</option>
+                        <option>Marketing</option>
+                        <option>Sales</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Experience Level</label>
+                    <select class="filter-select">
+                        <option>All Levels</option>
+                        <option>Entry Level</option>
+                        <option>Mid Level</option>
+                        <option>Senior Level</option>
+                        <option>Lead</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Sort By</label>
+                    <select class="filter-select">
+                        <option>Most Recent</option>
+                        <option>Most Applications</option>
+                        <option>Highest Match Rate</option>
+                        <option>Salary Range</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calendar View -->
+        <div class="calendar-section">
+            <div class="calendar-header">
+                <h2>Interview Calendar</h2>
+                <div class="calendar-nav">
+                    <button class="btn">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <span>March 2024</span>
+                    <button class="btn">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="calendar-grid">
+                <!-- Calendar days will be generated dynamically -->
+            </div>
+        </div>
+
+        <!-- Analytics Section -->
+        <div class="analytics-section">
+            <h2>Hiring Analytics</h2>
+            <div class="analytics-grid">
+                <div class="analytics-card">
+                    <div class="analytics-header">
+                        <h3 class="analytics-title">Application Trends</h3>
+                        <select class="filter-select">
+                            <option>Last 30 Days</option>
+                            <option>Last 90 Days</option>
+                            <option>Last Year</option>
+                        </select>
+                    </div>
+                    <div class="analytics-chart">
+                        <!-- Chart will be rendered here -->
+                    </div>
+                </div>
+                <div class="analytics-card">
+                    <div class="analytics-header">
+                        <h3 class="analytics-title">Candidate Sources</h3>
+                        <select class="filter-select">
+                            <option>All Time</option>
+                            <option>This Month</option>
+                            <option>This Quarter</option>
+                        </select>
+                    </div>
+                    <div class="analytics-chart">
+                        <!-- Chart will be rendered here -->
+                    </div>
+                </div>
+                <div class="analytics-card">
+                    <div class="analytics-header">
+                        <h3 class="analytics-title">Interview Success Rate</h3>
+                        <select class="filter-select">
+                            <option>All Time</option>
+                            <option>This Month</option>
+                            <option>This Quarter</option>
+                        </select>
+                    </div>
+                    <div class="analytics-chart">
+                        <!-- Chart will be rendered here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const sidebar = document.querySelector('.sidebar');
+        const icon = mobileMenuBtn.querySelector('i');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-times');
+        });
+
+        // Close sidebar when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!sidebar.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                sidebar.classList.remove('active');
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+
+        // Interview Modal Functions
+        function openInterviewModal() {
+            document.getElementById('interviewModal').classList.add('active');
+        }
+
+        function closeInterviewModal() {
+            document.getElementById('interviewModal').classList.remove('active');
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('interviewModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('interviewModal')) {
+                closeInterviewModal();
+            }
+        });
+
+        // Form Submission
+        document.getElementById('jobPostingForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            // Add your form submission logic here
+            alert('Job posted successfully!');
+        });
+
+        document.getElementById('interviewForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            // Add your interview scheduling logic here
+            alert('Interview scheduled successfully!');
+            closeInterviewModal();
+        });
+
+        // Calendar Generation
+        function generateCalendar() {
+            const calendarGrid = document.querySelector('.calendar-grid');
+            const daysInMonth = 31; // This should be calculated based on the current month
+            const firstDayOfMonth = 5; // This should be calculated based on the current month
+
+            // Add empty cells for days before the first day of the month
+            for (let i = 0; i < firstDayOfMonth; i++) {
+                calendarGrid.appendChild(createDayElement(''));
+            }
+
+            // Add days of the month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayElement = createDayElement(day);
+                if (day === new Date().getDate()) {
+                    dayElement.classList.add('today');
+                }
+                if (hasInterview(day)) {
+                    dayElement.classList.add('has-interview');
+                    dayElement.appendChild(createInterviewDot());
+                }
+                calendarGrid.appendChild(dayElement);
+            }
+        }
+
+        function createDayElement(day) {
+            const div = document.createElement('div');
+            div.className = 'calendar-day';
+            div.textContent = day;
+            if (day) {
+                div.addEventListener('click', () => showDayDetails(day));
+            }
+            return div;
+        }
+
+        function createInterviewDot() {
+            const div = document.createElement('div');
+            div.className = 'interview-dot';
+            return div;
+        }
+
+        function hasInterview(day) {
+            // This should be replaced with actual data
+            return [5, 12, 15, 20, 25].includes(day);
+        }
+
+        function showDayDetails(day) {
+            // Show interview details for the selected day
+            alert(`Showing interviews for March ${day}, 2024`);
+        }
+
+        // Initialize calendar
+        generateCalendar();
+
+        // Filter and Sort Functionality
+        document.querySelectorAll('.filter-select').forEach(select => {
+            select.addEventListener('change', () => {
+                // Implement filtering and sorting logic here
+                console.log('Filter changed:', select.value);
+            });
+        });
+    </script>
+</body>
+</html> 
